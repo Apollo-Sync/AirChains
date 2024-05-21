@@ -117,6 +117,72 @@ Check Node status
 junctiond status
 ```
 
+**Create new wallet**
+```
+junctiond keys add <new-wallet>
+```
+
+**Create new validator**
+```
+junctiond comet show-validator
+```
+
+**Create validator file**
+```
+nano $HOME/.junction/config/validator.json
+```
+
+**Input data to validator.json file. Replace at "pubkey": {....} from show-validator output**
+```
+{
+	"pubkey": {"@type":"/cosmos.crypto.ed25519.PubKey","key":"xxxxxxxxxxxxxxxxxxxxx="},
+	"amount": "1000000amf",
+	"moniker": "<validator-name>",
+	"identity": "optional identity signature (ex. UPort or Keybase)",
+	"website": "validator's (optional) website",
+	"security": "validator's (optional) security contact email",
+	"details": "validator's (optional) details",
+	"commission-rate": "0.05",
+	"commission-max-rate": "0.2",
+	"commission-max-change-rate": "0.01",
+	"min-self-delegation": "1"
+}
+```
+Ctrl+o > Enter > Ctrl+x to save file & exit
+
+**Check wallet balances**
+```
+junctiond q bank balances <yourwallet>
+```
+
+**Create VALIDATOR**
+```
+junctiond tx staking create-validator $HOME/.junction/config/validator.json --from wallet --chain-id junction --gas-prices 0.00025amf --gas-adjustment 1.5 --gas auto -y
+```
+
+**Check validator status**
+```
+junctiond status 2>&1 | jq .ValidatorInfo
+```
+
+```
+junctiond status info
+```
+
+**Delegate to Yourself**
+```
+junctiond tx staking delegate $(junctiond keys show wallet --bech val -a) 0.1amf  --from wallet --chain-id junction --gas-prices=0.00025amf  --gas-adjustment 1.5 --gas "auto" -y 
+```
+
+**Genesis & Addrbook**
+```
+curl -Ls https://raw.githubusercontent.com/Apollo-Sync/Airchains/main/genesis.json
+curl -Ls https://raw.githubusercontent.com/Apollo-Sync/Airchains/main/addrbook.json
+```
+
+
+
+
 
 
 
