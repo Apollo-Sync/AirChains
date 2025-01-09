@@ -128,6 +128,10 @@ sudo systemctl daemon-reload
 sudo systemctl enable junctiond
 ```
 
+**Launch Node**
+```
+sudo systemctl restart junctiond && journalctl -u junctiond -f -o cat
+```
 
 
 
