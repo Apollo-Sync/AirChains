@@ -139,62 +139,13 @@ sudo systemctl restart junctiond && journalctl -u junctiond -f -o cat
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 **Download Genesis**
 ```
 wget https://github.com/airchains-network/junction/releases/download/v0.1.0/genesis.json
 cp genesis.json $HOME/.junction/config/genesis.json
 ```
 
-**Configure**
-```
-SEEDS="2d1ea4833843cc1433e3c44e69e297f357d2d8bd@5.78.118.106:26656"
-PEERS="de2e7251667dee5de5eed98e54a58749fadd23d8@34.22.237.85:26656"
-sed -i -e "s/^seeds *=.*/seeds = \"$SEEDS\"/; s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" $HOME/.junction/config/config.toml
-```
 
-**Set Pruning, Enable Prometheus, Gas Price, and Indexer**
-```
-PRUNING="custom"
-PRUNING_KEEP_RECENT="100"
-PRUNING_INTERVAL="19"
-sed -i -e "s/^pruning *=.*/pruning = \"$PRUNING\"/" $HOME/.junction/config/app.toml
-sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \
-\"$PRUNING_KEEP_RECENT\"/" $HOME/.junction/config/app.toml
-sed -i -e "s/^pruning-interval *=.*/pruning-interval = \
-\"$PRUNING_INTERVAL\"/" $HOME/.junction/config/app.toml
-sed -i -e 's|^indexer *=.*|indexer = "null"|' $HOME/.junction/config/config.toml
-sed -i 's|^prometheus *=.*|prometheus = true|' $HOME/.junction/config/config.toml
-sed -i -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"0.00025amf\"/" $HOME/.junction/config/app.toml
-```
-
-**Create service**
-```sudo tee /etc/systemd/system/junctiond.service > /dev/null << EOF
-[Unit]
-Description=Airchain Node
-After=network-online.target
-StartLimitIntervalSec=0
-[Service]
-User=$USER
-Restart=always
-RestartSec=3
-LimitNOFILE=65535
-ExecStart=/usr/local/bin/junctiond start
-[Install]
-WantedBy=multi-user.target
-EOF
-```
 
 **Services Management**
 
