@@ -62,10 +62,23 @@ ignite version
 export PATH=$PATH:/usr/local/go/bin
 ```
 
-**Build binary**
+
+**Running a Full Node**
+
+
+
+**Download binary**
 ```
 wget https://github.com/airchains-network/junction/releases/download/v0.1.0/junctiond
+```
+
+**Make the binary executable**
+```
 chmod +x junctiond
+```
+
+**Move the binary to a system-wide directory**
+```
 sudo mv junctiond /usr/local/bin
 ```
 
@@ -73,6 +86,66 @@ sudo mv junctiond /usr/local/bin
 ```
 junctiond init <moniker>
 ```
+
+**Update Genesis Configuration**
+```
+wget https://github.com/airchains-network/junction/releases/download/v0.1.0/genesis.json
+```
+
+**Replace the Existing Genesis File**
+```
+cp genesis.json ~/.junction/config/genesis.json
+```
+
+**add peers**
+```
+PEERS="e929f77cfe4cd7d51433f438d3b764937e799313@airchains-testnet-peer.itrocket.net:19656,f0e05f00d4dd483edf300bd93fbace9f3e0d5a0a@91.227.33.18:19656,5880ddf4518b061c111ae6bf07b1ef76ef2a42af@158.220.100.154:26656,8997abdef4363d7225390d4f6fd1cc1dde15f4d9@65.21.221.110:63656,e00222e8db843c99acafe0a6dc0aebd3a95e813f@65.108.233.73:19656,859485b13c2d8ab3888ffc11d1c506d78f681317@5.9.116.21:26756,d5ded9ed366f251a59c85f84ed1fa825cceb0d97@[2a01:4f8:221:158e::2]:13656,0d03e79ef79687421ac6f4b1ddd6add67dd2d6a0@65.109.83.40:28156,0305205b9c2c76557381ed71ac23244558a51099@162.55.65.162:26656,2cac83c991358faf89f0c1bb40d94563609e00d9@65.109.84.33:26756,84230c0e2f9a1e0dbd96dea52b9b90209be0478b@65.109.92.163:1020"
+sed -i -e "/^\[p2p\]/,/^\[/{s/^[[:space:]]*persistent_peers *=.*/persistent_peers = \"$PEERS\"/}" $HOME/.junction/config/config.toml
+```
+
+**Set Mini Gas**
+```
+sed -i 's|^minimum-gas-prices *=.*|minimum-gas-prices = "0.00025amf"|g' $HOME/.junction//config/app.toml
+```
+
+**create service**
+```
+sudo tee /etc/systemd/system/junctiond.service > /dev/null << EOF
+[Unit]
+Description=airchains node service
+After=network-online.target
+[Service]
+User=$USER
+ExecStart=/usr/local/bin/junctiond start
+Restart=on-failure
+RestartSec=10
+LimitNOFILE=65535
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable junctiond
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 **Download Genesis**
 ```
